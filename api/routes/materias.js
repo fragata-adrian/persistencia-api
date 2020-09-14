@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var models = require("../models");
+const materia = require("../models/materia");
 
 router.get("/", (req, res) => {
   console.log("Esto es un mensaje para ver en consola");
@@ -15,7 +16,7 @@ router.get("/", (req, res) => {
 router.post("/", (req, res) => {
   models.materia
     .create({ nombre: req.body.nombre, id_carrera: req.body.id_carrera })
-    .then(materia => res.status(201).send({ id: materia.id }))
+    .then(carrera => res.status(201).send({ id: carrera.id }))
     .catch(error => {
       if (error == "SequelizeUniqueConstraintError: Validation error") {
         res.status(400).send('Bad request: existe otra carrera con el mismo nombre')
@@ -46,10 +47,9 @@ router.get("/:id", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-  const onSuccess = materia =>
+  const onSuccess = carrera =>
     materia
       .update({ nombre: req.body.nombre }, { fields: ["nombre"] })
-      .update({ id_carrera: req.body.id_carrera }, { fields: ["id_carrera"] })
       .then(() => res.sendStatus(200))
       .catch(error => {
         if (error == "SequelizeUniqueConstraintError: Validation error") {

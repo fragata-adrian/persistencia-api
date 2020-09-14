@@ -21,8 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/car', carrerasRouter);
-app.use('/mat', materiasRouter);
-
+app.use('/mat', carrerasRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
