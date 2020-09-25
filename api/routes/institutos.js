@@ -1,22 +1,23 @@
 var express = require("express");
 var router = express.Router();
 var models = require("../models");
+const instituto = require("../models/instituto");
+const materia = require("../models/instituto");
 
 router.get("/", (req, res) => {
   console.log("Esto es un mensaje para ver en consola");
-  models.carrera
+  models.instituto
     .findAll({
-      attributes: ["id", "nombre", "id_instituto"],
-      include:[{as:'Instituto-Relacionado', model:models.instituto, attributes: ["id","nombre"]}]
+      attributes: ["id", "nombre"]
     })
-    .then(carreras => res.send(carreras))
+    .then(institutos => res.send(institutos))
     .catch(() => res.sendStatus(500));
 });
 
 router.post("/", (req, res) => {
-  models.carrera
-    .create({ nombre: req.body.nombre, id_instituto: req.body.id_instituto })
-    .then(carrera => res.status(201).send({ id: carrera.id }))
+  models.instituto
+    .create({ nombre: req.body.nombre })
+    .then(instituto => res.status(201).send({ id: instituto.id }))
     .catch(error => {
       if (error == "SequelizeUniqueConstraintError: Validation error") {
         res.status(400).send('Bad request: existe otra carrera con el mismo nombre')
@@ -28,27 +29,27 @@ router.post("/", (req, res) => {
     });
 });
 
-const findCarrera = (id, { onSuccess, onNotFound, onError }) => {
-  models.carrera
+const findInstituto = (id, { onSuccess, onNotFound, onError }) => {
+  models.instituto
     .findOne({
       attributes: ["id", "nombre"],
       where: { id }
     })
-    .then(carrera => (carrera ? onSuccess(carrera) : onNotFound()))
+    .then(instituto => (instituto ? onSuccess(instituto) : onNotFound()))
     .catch(() => onError());
 };
 
 router.get("/:id", (req, res) => {
-  findCarrera(req.params.id, {
-    onSuccess: carrera => res.send(carrera),
+  findInstituto(req.params.id, {
+    onSuccess: instituto => res.send(instituto),
     onNotFound: () => res.sendStatus(404),
     onError: () => res.sendStatus(500)
   });
 });
 
 router.put("/:id", (req, res) => {
-  const onSuccess = carrera =>
-    carrera
+  const onSuccess = instituto =>
+    instituto
       .update({ nombre: req.body.nombre }, { fields: ["nombre"] })
       .then(() => res.sendStatus(200))
       .catch(error => {
@@ -60,7 +61,7 @@ router.put("/:id", (req, res) => {
           res.sendStatus(500)
         }
       });
-    findCarrera(req.params.id, {
+    findInstituto(req.params.id, {
     onSuccess,
     onNotFound: () => res.sendStatus(404),
     onError: () => res.sendStatus(500)
@@ -68,12 +69,12 @@ router.put("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-  const onSuccess = carrera =>
-    carrera
+  const onSuccess = instituto =>
+    instituto
       .destroy()
       .then(() => res.sendStatus(200))
       .catch(() => res.sendStatus(500));
-  findCarrera(req.params.id, {
+  findInstituto(req.params.id, {
     onSuccess,
     onNotFound: () => res.sendStatus(404),
     onError: () => res.sendStatus(500)
