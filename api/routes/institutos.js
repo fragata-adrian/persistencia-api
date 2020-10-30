@@ -5,10 +5,15 @@ const instituto = require("../models/instituto");
 const materia = require("../models/instituto");
 
 router.get("/", (req, res) => {
+  const paginaActual = parseInt(req.query.paginaActual);
+  const cantidadAVer = parseInt(req.query.cantidadAVer);
+  
   console.log("Esto es un mensaje para ver en consola");
   models.instituto
     .findAll({
-      attributes: ["id", "nombre"]
+      attributes: ["id", "nombre"],
+      offset: (paginaActual*cantidadAVer),
+      limit: cantidadAVer
     })
     .then(institutos => res.send(institutos))
     .catch(() => res.sendStatus(500));
