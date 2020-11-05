@@ -4,10 +4,12 @@ var models = require("../models");
 const materia = require("../models/materia");
 
 router.get("/", (req, res) => {
-  const paginaActual = parseInt(req.query.paginaActual);
-  const cantidadAVer = parseInt(req.query.cantidadAVer);
+  let paginaActual; 
+  let cantidadAVer; 
 
-  console.log("Esto es un mensaje para ver en consola");
+  parseInt(req.query.paginaActual) ? paginaActual = parseInt(req.query.paginaActual) : paginaActual = 0;
+  parseInt(req.query.cantidadAVer) ? cantidadAVer = parseInt(req.query.cantidadAVer) : cantidadAVer = 9999;
+  
   models.materia
     .findAll({
       attributes: ["id", "nombre", "id_carrera"],
