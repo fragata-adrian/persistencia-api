@@ -11,13 +11,19 @@ router.get("/", (req, res) => {
   
   models.alumno
     .findAll({
-      attributes: ["id", "apellido", "nombre", "dni", "id_carrera"],
-      include:[{as:'Carrera-Relacionada', model:models.carrera, attributes: ["id","nombre"]}],
+      attributes: ["id", "apellido", "nombre", "dni"],
+      include:[
+        {as:'Carrera-Relacionada', model:models.carrera, attributes: ["id","nombre"]}, 
+        {as: 'Notas', model: models.nota, attributes: { exclude: ["createdAt", "updatedAt"] }},
+      ],
       offset: (paginaActual*cantidadAVer),
       limit: cantidadAVer
     })
     .then(alumnos => res.send(alumnos))
-    .catch(() => res.sendStatus(500));
+    .catch((err) => {
+      res.sendStatus(500);
+      console.log(err);
+  });
 });
 
 router.post("/", (req, res) => {
@@ -26,7 +32,7 @@ router.post("/", (req, res) => {
     .then(alumno => res.status(201).send({ id: alumno.id }))
     .catch(error => {
       if (error == "SequelizeUniqueConstraintError: Validation error") {
-        res.status(400).send('Bad request: existe otra carrera con el mismo nombre')
+        res.status(400).send('Bad request: existe otro alumno con el mismo nombre')
       }
       else {
         console.log(`Error al intentar insertar en la base de datos: ${error}`)
@@ -39,6 +45,10 @@ const findAlumno = (id, { onSuccess, onNotFound, onError }) => {
   models.alumno
     .findOne({
       attributes: ["id", "apellido", "nombre", "dni"],
+      include:[
+        {as:'Carrera-Relacionada', model:models.carrera, attributes: ["id","nombre"]}, 
+        {as: 'Notas', model: models.nota, attributes: { exclude: ["id_alumno", "createdAt", "updatedAt"] }},
+      ],
       where: { id }
     })
     .then(alumno => (alumno ? onSuccess(alumno) : onNotFound()))
