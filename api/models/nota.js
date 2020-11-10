@@ -6,13 +6,15 @@ module.exports = (sequelize, DataTypes) => {
     calificacion: DataTypes.FLOAT
   }, {});
   nota.associate = function(models) {
+    // Asociacion de uno
+    // tiene una...
     nota.hasOne(models.alumno, {
-      foreignKey: 'id',
-      sourceKey: 'id_alumno'
+      foreignKey: 'id', // Clave referenciada en tabla externa 'alumno'
+      sourceKey: 'id_alumno' // Clave en la table notas
     })
     nota.hasOne(models.materia, {
-      foreignKey: 'id',
-      sourceKey: 'id_materia'
+      foreignKey: 'id', // Clave referenciada en tabla externa 'materia'
+      sourceKey: 'id_materia' // Clave en la table notas
     })
   };
   return nota;

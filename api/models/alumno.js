@@ -13,10 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       as : 'Carrera-Relacionada',  // nombre de mi relacion
       foreignKey: 'id_carrera'     // campo con el que voy a igualar
     })
+    // Asociacion de uno a muchos
+    // tiene muchas..
     alumno.hasMany(models.nota, {
       as: 'Notas',
-      foreignKey: 'id_alumno',
-      sourceKey: 'id'
+      foreignKey: 'id_alumno', // Clave foranea en tabla externa 'notas'
+      sourceKey: 'id' // Clave primaria referenciada para la asociacion
     })
   };
   return alumno;

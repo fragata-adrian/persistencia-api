@@ -1,4 +1,5 @@
 var express = require("express");
+const { sequelize } = require("../models");
 var router = express.Router();
 var models = require("../models");
 
@@ -47,7 +48,7 @@ const findAlumno = (id, { onSuccess, onNotFound, onError }) => {
       attributes: ["id", "apellido", "nombre", "dni"],
       include:[
         {as:'Carrera-Relacionada', model:models.carrera, attributes: ["id","nombre"]}, 
-        {as: 'Notas', model: models.nota, attributes: { exclude: ["id_alumno", "createdAt", "updatedAt"] }},
+        {as: 'Notas', model: models.nota, attributes: { exclude: ["id_alumno", "createdAt", "updatedAt"]}},
       ],
       where: { id }
     })
