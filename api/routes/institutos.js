@@ -59,14 +59,9 @@ router.put("/:id", (req, res) => {
     instituto
       .update({ nombre: req.body.nombre }, { fields: ["nombre"] })
       .then(() => res.sendStatus(200))
-      .catch(error => {
-        if (error == "SequelizeUniqueConstraintError: Validation error") {
-          res.status(400).send('Bad request: existe otro instituto con el mismo nombre')
-        }
-        else {
-          console.log(`Error al intentar actualizar la base de datos: ${error}`)
-          res.sendStatus(500)
-        }
+      .catch((err) => {
+        res.sendStatus(500);
+        console.log(err);
       });
     findInstituto(req.params.id, {
     onSuccess,

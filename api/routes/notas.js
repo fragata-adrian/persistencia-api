@@ -51,7 +51,7 @@ router.get("/:id", (req, res) => {
 router.put("/:id", (req, res) => {
   const onSuccess = nota =>
     nota
-      .update({ calificacion: req.body.calificacion }, { fields: ["calificacion"] })
+      .update({ id_materia: req.body.id_materia, id_alumno: req.body.id_alumno, calificacion: req.body.calificacion }, { fields: ["id_materia", "id_alumno", "calificacion"] })
       .then(() => res.sendStatus(200))
       .catch((err) => {
         res.sendStatus(500);

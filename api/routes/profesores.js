@@ -57,16 +57,11 @@ router.get("/:id", (req, res) => {
 router.put("/:id", (req, res) => {
   const onSuccess = profesor =>
     profesor
-      .update({ nombre: req.body.nombre }, { fields: ["nombre"] })
+      .update({ apellido: req.body.apellido, nombre: req.body.nombre, dni: req.body.dni, id_materia: req.body.dni }, { fields: ["apellido", "nombre", "dni", "id_materia"] })
       .then(() => res.sendStatus(200))
-      .catch(error => {
-        if (error == "SequelizeUniqueConstraintError: Validation error") {
-          res.status(400).send('Bad request: existe otro profesor con el mismo id')
-        }
-        else {
-          console.log(`Error al intentar actualizar la base de datos: ${error}`)
-          res.sendStatus(500)
-        }
+      .catch((err) => {
+        res.sendStatus(500);
+        console.log(err);
       });
     findProfesor(req.params.id, {
     onSuccess,
